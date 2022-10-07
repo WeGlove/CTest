@@ -6,8 +6,11 @@ import myModule
 def string_tests():
     print("Print Hello World from C")
     myModule.c_hello_world()
-    print("\nPrint Apgel from C")
+    print("\nPrint Apfel from C")
     myModule.c_print("Apfel")
+    print("\nPrint Ǣ from C")
+    myModule.c_print("Ǣ")
+
 
 def number_tests():
     print("\nPrint given number")

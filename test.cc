@@ -5,7 +5,7 @@ Should also make some Linter for the python functions.
 
 
 #include <Python.h>
-
+#include <ndarrayobject.h>
 
 // Function 1: A simple 'hello world' function
 static PyObject* c_hello_world(PyObject* self, PyObject* args)
@@ -17,8 +17,36 @@ static PyObject* c_hello_world(PyObject* self, PyObject* args)
 // Function 1: A simple 'hello world' function
 static PyObject* c_print(PyObject* self, PyObject* args)
 {
-    const char* arg_string = PyUnicode_AS_DATA(PyTuple_GET_ITEM(args, 0)); // This conversion doesn't work
-    printf(arg_string);
+    PyObject* str_obj = PyTuple_GET_ITEM(args, 0);
+    Py_ssize_t size = PyUnicode_GET_LENGTH(str_obj);
+    wchar_t* arg_string = PyUnicode_AsWideCharString(str_obj, &size);
+    size_t length = sizeof(arg_string)/sizeof(arg_string[0]);
+    unsigned int kind = PyUnicode_KIND(str_obj);
+    printf("Kind: %d\n", kind);
+    printf("Charsize: %d\n", sizeof(arg_string[0]));
+    printf("Length: %zu\n", length);
+
+
+
+    switch (kind){
+        case 1:
+            Py_UCS1* str_1 = PyUnicode_1BYTE_DATA(str_obj);
+            wprintf(str_1);
+            break;
+        case 2:
+            Py_UCS2* str_2 = PyUnicode_2BYTE_DATA(str_obj);
+            wprintf(str_2);
+            break;
+        case 3:
+            Py_UCS4* str_4 = PyUnicode_4BYTE_DATA(str_obj);
+            wprintf(str_4);
+            break;
+        default:
+            return Py_None;
+    }
+
+
+
     return Py_None;
 }
 
